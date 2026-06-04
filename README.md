@@ -1,6 +1,6 @@
 # Isoform-Aware Functional Enrichment Analysis Pipeline
 
-This repository provides a pipeline for **isoform-level differential transcript usage (DTU) classification** followed by **GO term over-representation analysis (ORA)**. The method is designed to capture functional enrichment driven specifically by **isoform switching events**, rather than gene-level changes.
+This repository provides a pipeline for **isoform-level differential transcript usage (DTU) classification** followed by **GO term over-representation analysis (ORA)**. The method is designed to capture functional enrichment driven specifically by **isoform-level variation**, rather than gene-level changes.
 
 ---
 
