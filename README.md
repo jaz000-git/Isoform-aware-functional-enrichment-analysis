@@ -37,8 +37,114 @@ python pipeline/isoform_ora_pipeline.py \
   --go_file data/IPS_go_map.txt
 ```
 
-## ⚠️ Work in Progress (WIP)
+---
 
-This repository is part of an ongoing thesis project. It is incomplete and subject to future refinement, but the pipeline is stable for the analyses presented in the thesis.
+## Input Files
+
+### DTU file (`--dtu`)
+
+A CSV file containing differential transcript usage results. The following columns are required:
+
+| Column     | Description                   |
+| ---------- | ----------------------------- |
+| isoform_id | Transcript/isoform identifier |
+| padj       | Adjusted p-value              |
+| logFC      | Log fold-change               |
+
+Example:
+
+```csv
+isoform_id,padj,logFC
+ENST00000335137,0.001,1.2
+ENST00000423372,0.04,-0.8
+```
+
+### GO mapping file (`--go_file`)
+
+A tab-separated file containing transcript-to-GO mappings.
+
+Required columns:
+
+| Column     | Description           |
+| ---------- | --------------------- |
+| transcript | Transcript identifier |
+| gene       | Gene symbol           |
+| GO         | Gene Ontology term    |
+
+Example:
+
+```text
+transcript	gene	GO
+ENST00000335137	TP53	GO:0006915
+```
 
 ---
+
+## Output Files
+
+Running the pipeline produces three output files:
+
+### `{prefix}_dtu.tsv`
+
+Classified transcript table containing:
+
+| Column     | Description           |
+| ---------- | --------------------- |
+| transcript | Transcript identifier |
+| condition  | cond, ref, or non_sig |
+
+### `{prefix}_cond.tsv`
+
+GO enrichment results for transcripts enriched in the condition of interest.
+
+### `{prefix}_ref.tsv`
+
+GO enrichment results for transcripts enriched in the reference condition.
+
+Enrichment output columns:
+
+| Column          | Description                            |
+| --------------- | -------------------------------------- |
+| GO              | GO term                                |
+| fg_hits         | Foreground transcript hits             |
+| bg_hits         | Background transcript hits             |
+| TranscriptRatio | Foreground hit proportion              |
+| BgRatio         | Background hit proportion              |
+| OR              | Odds ratio                             |
+| p               | Raw p-value                            |
+| FDR             | Benjamini–Hochberg adjusted p-value    |
+| test            | Statistical test used (chi2 or fisher) |
+| genes           | Genes contributing to enrichment       |
+
+---
+
+## Classification Criteria
+
+Transcripts are classified according to the following thresholds:
+
+* **cond**: `padj < 0.05` and `logFC > 0.5`
+* **ref**: `padj < 0.05` and `logFC < -0.5`
+* **non_sig**: all other transcripts
+
+---
+
+## Statistical Methods
+
+For each GO term, enrichment is assessed using a 2×2 contingency table comparing foreground and background transcript sets.
+
+* Chi-square test is used when expected counts are sufficient.
+* Fisher's exact test is used when expected cell counts are less than 5.
+* Odds ratios are calculated using a Haldane correction.
+* Multiple testing correction is performed using the Benjamini–Hochberg false discovery rate (FDR) procedure.
+
+---
+
+## Notes
+
+* Transcript version suffixes (e.g. `.1`, `.2`) are removed prior to analysis.
+* Enrichment is performed at the transcript level rather than the gene level.
+* GO annotations must correspond to transcript identifiers after normalization.
+* Foreground and background transcript sets are derived directly from DTU classification.
+
+---
+
