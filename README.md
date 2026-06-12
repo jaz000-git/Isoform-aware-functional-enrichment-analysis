@@ -47,9 +47,9 @@ A CSV file containing differential transcript usage results. The following colum
 
 | Column     | Description                   |
 | ---------- | ----------------------------- |
-| isoform_id | Transcript/isoform identifier |
-| padj       | Adjusted p-value              |
-| logFC      | Log fold-change               |
+| isoform_id | Ensembl transcript identifier |
+| padj       | FDR adjusted p-value          |
+| logFC      | Log 2 fold-change             |
 
 Example:
 
@@ -67,15 +67,15 @@ Required columns:
 
 | Column     | Description           |
 | ---------- | --------------------- |
-| transcript | Transcript identifier |
-| gene       | Gene symbol           |
+| transcript | Ensembl transcript identifier |
+| gene       | Ensembl gene identifier       |
 | GO         | Gene Ontology term    |
 
 Example:
 
 ```text
-transcript	gene	GO
-ENST00000335137	TP53	GO:0006915
+GO	transcript	gene
+GO:0090336	ENST00000496770	ENSG00000160097
 ```
 
 ---
@@ -133,7 +133,7 @@ Transcripts are classified according to the following thresholds:
 For each GO term, enrichment is assessed using a 2×2 contingency table comparing foreground and background transcript sets.
 
 * Chi-square test is used when expected counts are sufficient.
-* Fisher's exact test is used when expected cell counts are less than 5.
+* Fisher's exact test is used when any expected cell counts are less than 5.
 * Odds ratios are calculated using a Haldane correction.
 * Multiple testing correction is performed using the Benjamini–Hochberg false discovery rate (FDR) procedure.
 
@@ -141,10 +141,7 @@ For each GO term, enrichment is assessed using a 2×2 contingency table comparin
 
 ## Notes
 
-* Transcript version suffixes (e.g. `.1`, `.2`) are removed prior to analysis.
-* Enrichment is performed at the transcript level rather than the gene level.
-* GO annotations must correspond to transcript identifiers after normalization.
-* Foreground and background transcript sets are derived directly from DTU classification.
+* Transcript version suffixes (e.g. `.1`, `.2`) should be removed prior to analysis.
 
 ---
 
