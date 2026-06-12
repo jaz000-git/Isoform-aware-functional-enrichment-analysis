@@ -34,7 +34,7 @@ The pipeline performs three main steps:
 python pipeline/isoform_ora_pipeline.py \
   --dtu data/DTU_DCM_vs_NF.csv \
   --prefix dcm \
-  --go_file data/IPS_go_map.txt
+  --go_file data/IPS_go_map_clean.txt
 ```
 
 ---
